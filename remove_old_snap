@@ -1,0 +1,9 @@
+#!/bin/bash
+snap list --all | grep disable > dis
+if [ -s dis ]
+then
+while read LINE; do ver=$(echo $LINE |awk '{print $3}') ; app=$(echo $LINE |awk '{print $1}') ; echo $app $ver ; sudo snap remove --revision=$ver $app ;  done < dis
+else
+	echo "nothing to remove"
+fi
+rm dis

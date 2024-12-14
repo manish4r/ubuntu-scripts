@@ -1,0 +1,28 @@
+#!/bin/bash
+echo "1) sha256sum"
+echo "2) md5sum"
+echo -e "Select one option (1,2): \c"
+read opt
+case $opt in
+	1) cmd=sha256sum ;;
+
+	2) cmd=md5sum ;;
+
+	*) echo "Wrong option " ; exit;
+esac	
+hash=$($cmd $1 | awk '{print $1}') 
+#pid=$!
+#echo "pid is $pid"
+#echo $hash
+#echo -e "Calculating hash . Please wait \c"
+#while [ -e /proc/$pid ]; do echo -n . ; sleep 1 ; done
+#echo
+echo -e "Enter hash to compare : \c"
+read cmp
+cmp=$(echo $cmp | awk '{print tolower($0)}')
+if [ "$hash" == "$cmp" ]
+then
+	echo " $cmd hash matches for $1 "
+else
+	echo " $cmd hash doesn't match for $1 "
+fi	

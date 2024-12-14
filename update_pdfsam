@@ -1,0 +1,11 @@
+#!/bin/bash
+cd /tmp
+wget -q "https://github.com/torakiki/pdfsam/releases" -O releases
+ver=$(cat releases  | grep "torakiki/pdfsam/tree" | head -1 | awk -F / '{print $5}' | awk -F\" '{print $1}')
+rm releases
+#echo $ver
+ver1=$(echo $ver | sed 's/v//' )
+echo "Download pdfsam version $ver1 from github"
+wget -q "https://github.com/torakiki/pdfsam/releases/download/$ver/pdfsam_$ver1-1_amd64.deb" -O pdfsam_${ver1}_amd64.deb
+sudo dpkg -i pdfsam_${ver1}_amd64.deb
+rm pdfsam_${ver1}_amd64.deb
