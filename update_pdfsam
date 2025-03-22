@@ -1,12 +1,17 @@
 #!/bin/bash
 cd /tmp
+## Get latest version detail from releases
 wget -q "https://github.com/torakiki/pdfsam/releases" -O releases
 ver=$(cat releases  | grep "torakiki/pdfsam/tree" | head -1 | awk -F / '{print $5}' | awk -F\" '{print $1}')
 rm releases
-#echo $ver
+#echo $ver 
+## format version number
 ver1=$(echo $ver | sed 's/v//' )
-echo "Download pdfsam version $ver1 from github"
-wget -q "https://github.com/torakiki/pdfsam/releases/download/$ver/pdfsam_$ver1-1_amd64.deb" -O pdfsam_${ver1}_amd64.deb
+## 22-Mar-2024 - updated file name in url from pdfsam to pdfsam-basic to match changes in github repo
+echo "Download pdfsam basic version $ver1 from github"
+wget -q "https://github.com/torakiki/pdfsam/releases/download/$ver/pdfsam-basic_$ver1-1_amd64.deb" -O pdfsam_${ver1}_amd64.deb
+## install pdfsam
 ## 22-Dec-2024 - Added option --skip-same-version to skip install of the package if the same version and architecture of the package is already installed
 sudo dpkg --skip-same-version -i pdfsam_${ver1}_amd64.deb
+## remove downloaded package
 rm pdfsam_${ver1}_amd64.deb
