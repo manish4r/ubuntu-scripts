@@ -1,0 +1,57 @@
+#!/bin/bash
+cd /tmp
+### get version list from sourceforge ##
+wget -q 'https://sourceforge.net/projects/ventoy/files/' -O list_ventoy
+## install location is ~/Downloads/Softwares/Ventoy of current user"
+inst_loc="$HOME/Downloads/Softwares/Ventoy"
+## verify connection ###
+if [ $? -ne 0 ]
+then
+	## exit if no connection ##
+	echo "Cannot connect to sourceforge website...please check"
+	rm list_ventoy
+else
+	## get latest version number ##
+	ver=$(cat list_ventoy | grep latest | awk -F '=' '{print $4}'| awk -F '/' '{print $2}')
+	rm list_ventoy
+	## get current installed version
+	if [ -f $inst_loc/ventoy/version ]
+	then
+		curr_ver=$(cat $inst_loc/ventoy/version)
+	else
+		curr_ver=0
+	fi
+	ver1=$(echo $ver | sed 's/v//')
+	## match current and web version number ##
+	if [ "$curr_ver" != "$ver1" ]
+	then
+		echo "Downloading latest version $ver from sourceforge"
+		wget -q "https://excellmedia.dl.sourceforge.net/project/ventoy/$ver/ventoy-$ver1-linux.tar.gz" -O ventoy-$ver1-linux.tar.gz
+		## check sha256sum detail of downloaded version and match with information on website ##
+		sha_down=$(sha256sum ventoy-$ver1-linux.tar.gz| awk '{print $1}')
+		wget -q "https://sourceforge.net/projects/ventoy/files/$ver/" -O files_ventoy
+		sha_web=$(cat files_ventoy | grep -A3 'SHA-256' |grep ventoy-$ver1-linux.tar.gz | awk -F '>' '{print $3}'| awk '{print $1}')
+		rm files_ventoy
+		if [ ${sha_down} == ${sha_web} ]
+		then
+			echo "Version $ver successfully downloaded"
+			## backup configuration ini file ##
+			cp -p $inst_loc/Ventoy2Disk.ini /tmp/.
+			## cleanup old installation ##
+			rm -rf $inst_loc/
+			mkdir $inst_loc/
+			## Extract tarball ##
+			tar -xzf ventoy-$ver1-linux.tar.gz --one-top-level=$inst_loc
+			rm ventoy-$ver1-linux.tar.gz
+			cp -aRp $inst_loc/ventoy-$ver1/. $inst_loc/. && rm -rf $inst_loc/ventoy-$ver1/
+			## Restore configuration ini file ##
+			cp -p /tmp/Ventoy2Disk.ini $inst_loc/.
+			rm -f /tmp/Ventoy2Disk.ini
+			echo "Current version of Ventoy in $inst_loc/ is $(cat $inst_loc/ventoy/version)"
+		else
+			echo "There is error in download..please check"
+		fi
+	else
+		echo "Version $ver1 is already present in $inst_loc/"
+	fi
+fi
