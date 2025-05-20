@@ -12,6 +12,8 @@ echo "Download pdfsam basic version $ver1 from github"
 wget -q "https://github.com/torakiki/pdfsam/releases/download/$ver/pdfsam-basic_$ver1-1_amd64.deb" -O pdfsam_${ver1}_amd64.deb
 ## install pdfsam
 ## 22-Dec-2024 - Added option --skip-same-version to skip install of the package if the same version and architecture of the package is already installed
-sudo dpkg --skip-same-version -i pdfsam_${ver1}_amd64.deb
+## 21-May-2025 - Change from dpkg to apt
+#sudo dpkg --skip-same-version -i pdfsam_${ver1}_amd64.deb
+sudo apt install ./pdfsam_${ver1}_amd64.deb
 ## remove downloaded package
 rm pdfsam_${ver1}_amd64.deb
