@@ -1,9 +1,9 @@
 #!/bin/bash
 cd /tmp
-### get version list from sourceforge ##
-wget -q 'https://sourceforge.net/projects/ventoy/files/' -O list_ventoy
 ## install location is ~/Downloads/Softwares/Ventoy of current user"
 inst_loc="$HOME/Downloads/Softwares/Ventoy"
+### get version list from sourceforge ##
+wget -q 'https://sourceforge.net/projects/ventoy/files/' -O list_ventoy
 ## verify connection ###
 if [ $? -ne 0 ]
 then
